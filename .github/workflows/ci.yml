@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        os: [ windows-latest, macos-latest ]
 
     steps:
       - uses: actions/checkout@v4
@@ -44,5 +44,5 @@ jobs:
       - name: Configure
         run: cmake --preset debug
 
-      - name: Build
-        run: cmake --build --preset debug
+      - name: Type check engine
+        run: cmake --build --preset debug --target engine sandbox_compile

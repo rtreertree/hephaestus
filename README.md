@@ -1,4 +1,5 @@
 # hephaestus
+[![ci](https://github.com/rtreertree/hephaestus/actions/workflows/ci.yml/badge.svg)](https://github.com/rtreertree/hephaestus/actions/workflows/ci.yml)
 
 Cross-platform (Windows / Linux / macOS) engine foundation on bgfx + SDL3.
 

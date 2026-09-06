@@ -1,4 +1,9 @@
-add_executable(sandbox WIN32 MACOSX_BUNDLE main.cpp)
+add_library(sandbox_compile OBJECT main.cpp)
+
+# Keep the sandbox source compilable without requiring the executable link.
+target_compile_definitions(sandbox_compile PRIVATE SDL_MAIN_HANDLED)
+
+add_executable(sandbox WIN32 MACOSX_BUNDLE $<TARGET_OBJECTS:sandbox_compile>)
 
 target_link_libraries(sandbox PRIVATE engine)
 

@@ -6,7 +6,7 @@ int main(int /*argc*/, char** /*argv*/) {
     SDL_SetMainReady();
 
     eng::EngineDesc desc;
-    desc.title  = "MyEngine — Sandbox";
+    desc.title  = "Hephaestus — Engine foundation";
     desc.width  = 480;
     desc.height = 120;
     desc.vsync  = true;
