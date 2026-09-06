@@ -7,8 +7,8 @@ int main(int /*argc*/, char** /*argv*/) {
 
     eng::EngineDesc desc;
     desc.title  = "MyEngine — Sandbox";
-    desc.width  = 1280;
-    desc.height = 720;
+    desc.width  = 480;
+    desc.height = 120;
     desc.vsync  = true;
 
     eng::Engine engine;

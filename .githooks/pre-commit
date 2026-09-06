@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -u
+
+repo_root=$(git rev-parse --show-toplevel) || exit 1
+cd "$repo_root" || exit 1
+
+staged_files=$(git diff --cached --name-only --diff-filter=ACMR)
+if [ -z "$staged_files" ]; then
+    exit 0
+fi
+
+failed=0
+
+if ! git diff --cached --check; then
+    printf '\nCommit blocked: staged whitespace errors were found.\n'
+    failed=1
+fi
+
+while IFS= read -r file; do
+    case "$file" in
+        *.c|*.cc|*.cpp|*.cxx|*.h|*.hh|*.hpp|*.hxx)
+            ;;
+        *)
+            continue
+            ;;
+    esac
+
+    if git show ":$file" | awk -v file="$file" '
+        /^[[:space:]]*\t/ {
+            if ($0 ~ /^[ ]+\t/) {
+                printf "%s:%d: mixed spaces and tabs in indentation\n", file, NR
+            } else {
+                printf "%s:%d: tabs are not allowed for indentation\n", file, NR
+            }
+            found = 1
+        }
+        END { exit found }
+    '; then
+        :
+    else
+        failed=1
+    fi
+
+    if git show ":$file" | awk -v file="$file" '
+        /^[[:space:]]*\{[[:space:]]*$/ {
+            printf "%s:%d: opening braces must remain on the declaration line\n", file, NR
+            found = 1
+        }
+        END { exit found }
+    '; then
+        :
+    else
+        failed=1
+    fi
+done <<EOF
+$staged_files
+EOF
+
+if [ "$failed" -ne 0 ]; then
+    printf '\nCommit blocked. Fix the reported style issues and stage the files again.\n'
+    exit 1
+fi
+
+exit 0

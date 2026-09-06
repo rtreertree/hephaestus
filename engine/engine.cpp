@@ -45,7 +45,6 @@ void Engine::Run() {
         if (m_window.ConsumeResize()) {
             m_gfx.Resize(m_window.Width(), m_window.Height());
         }
-
         Frame(dt);
     }
 }

@@ -26,4 +26,19 @@ cmake --preset debug
 cmake --build --preset debug
 ```
 
+
+
+
+
 Binary: `build/debug/sandbox/sandbox[.exe]`
+
+## Git hooks
+
+Enable the repository pre-commit checks once after cloning:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The hook checks staged C and C++ files for trailing whitespace, tabs or mixed
+indentation, and opening braces placed on their own line.
