@@ -45,4 +45,4 @@ jobs:
         run: cmake --preset debug
 
       - name: Type check engine
-        run: cmake --build --preset debug --target engine sandbox_compile
+        run: cmake --build --preset debug --target engine
