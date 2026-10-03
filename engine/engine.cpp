@@ -41,10 +41,10 @@ void Engine::Run() {
         const u64 now = SDL_GetPerformanceCounter();
         const f32 dt  = static_cast<f32>(static_cast<f64>(now - last) / static_cast<f64>(freq));
         last = now;
-
         if (m_window.ConsumeResize()) {
             m_gfx.Resize(m_window.Width(), m_window.Height());
         }
+
         Frame(dt);
     }
 }
@@ -54,10 +54,9 @@ void Engine::Frame(f32 deltaSeconds) {
 
     bgfx::dbgTextClear();
     bgfx::dbgTextPrintf(1, 1, 0x0f, "MyEngine foundation");
-    bgfx::dbgTextPrintf(1, 2, 0x0f, "renderer: %s",
-                        bgfx::getRendererName(bgfx::getRendererType()));
-    bgfx::dbgTextPrintf(1, 3, 0x0f, "%ux%u  dt: %.2f ms",
-                        m_gfx.Width(), m_gfx.Height(), deltaSeconds * 1000.0f);
+    bgfx::dbgTextPrintf(1, 2, 0x0f, "renderer: %s", bgfx::getRendererName(bgfx::getRendererType()));
+    bgfx::dbgTextPrintf(1, 3, 0x0f, "%ux%u  dt: %.2f ms", m_gfx.Width(), m_gfx.Height(), deltaSeconds * 1000.0f);
+    bgfx::dbgTextPrintf(1, 4, (1 / deltaSeconds > 60) ? 0x0f : 0x0e, "FPS: %.2f", 1 / deltaSeconds);
     bgfx::dbgTextPrintf(1, 5, 0x0a, "ESC to quit");
 
     m_gfx.EndFrame();

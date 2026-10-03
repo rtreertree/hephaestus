@@ -28,9 +28,6 @@ cmake --build --preset debug
 ```
 
 
-
-
-
 Binary: `build/debug/sandbox/sandbox[.exe]`
 
 ## Git hooks

@@ -2,6 +2,8 @@
 #include "gfx/views.h"
 #include "core/log.h"
 
+#include "gfx/quitecallback.h"
+
 #include <bgfx/bgfx.h>
 
 namespace eng::gfx {
@@ -23,6 +25,8 @@ bool GfxSystem::Init(const GfxDesc& desc) {
     m_resetFlags = BGFX_RESET_NONE;
     if (desc.vsync) m_resetFlags |= BGFX_RESET_VSYNC;
 
+    static QuietCallback s_callback;
+
     bgfx::Init init;
     init.type              = bgfx::RendererType::Count;  // auto-pick per platform
     init.vendorId          = BGFX_PCI_ID_NONE;
@@ -32,6 +36,7 @@ bool GfxSystem::Init(const GfxDesc& desc) {
 
     init.platformData.nwh = desc.native.windowHandle;
     init.platformData.ndt = desc.native.displayHandle;
+    init.callback         = &s_callback;
 #if defined(__linux__) || defined(__FreeBSD__)
     init.platformData.type = desc.native.isWayland
         ? bgfx::NativeWindowHandleType::Wayland

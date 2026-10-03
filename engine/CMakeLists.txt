@@ -12,6 +12,7 @@ add_library(engine STATIC
   platform/native_handle.h
   gfx/views.h
   gfx/gfx_system.h
+  gfx/quitecallback.h
   engine.h
 )
 

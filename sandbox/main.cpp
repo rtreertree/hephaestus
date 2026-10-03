@@ -1,5 +1,4 @@
 #include <engine.h>
-
 #include <SDL3/SDL_main.h>
 
 int main(int /*argc*/, char** /*argv*/) {
@@ -7,8 +6,8 @@ int main(int /*argc*/, char** /*argv*/) {
 
     eng::EngineDesc desc;
     desc.title  = "Hephaestus — Engine foundation";
-    desc.width  = 480;
-    desc.height = 120;
+    desc.width  = 1080;
+    desc.height = 720;
     desc.vsync  = true;
 
     eng::Engine engine;

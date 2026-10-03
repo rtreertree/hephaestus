@@ -9,6 +9,7 @@ struct EngineDesc {
     const char* title  = "MyEngine";
     u32         width  = 1280;
     u32         height = 720;
+    u32         maxFps = 100;
     bool        vsync  = true;
 };
 
