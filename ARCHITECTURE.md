@@ -9,7 +9,7 @@ Hephaestus is a small cross-platform C++20 engine foundation for Windows, Linux,
 - **CMake + Ninja** for configuration and builds.
 - **The `sandbox` executable** as the current application and integration harness.
 
-The project is intentionally small. The engine currently establishes a native window, initializes bgfx against that window, runs a frame loop, displays diagnostic text, handles resizing, and shuts down cleanly. Gameplay, resource management, scene management, and a full rendering pipeline are future layers rather than current responsibilities.
+The project is intentionally small. The engine currently establishes a native window, initializes bgfx against that window, runs a frame loop, compiles and loads shaders, renders a rotating indexed cube, handles resizing, and shuts down cleanly. Gameplay, resource management, scene management, and a full rendering pipeline are future layers rather than current responsibilities.
 
 ## 2. High-Level Structure
 
@@ -57,7 +57,7 @@ The application does not need to know how SDL obtains native handles or which re
 | `engine/platform/` | SDL window ownership, events, resize state, and native window handle extraction. |
 | `engine/gfx/` | bgfx initialization, reset/resize behavior, frame submission, and reserved view IDs. |
 | `sandbox/` | Executable entry point used to exercise the engine. |
-| `shaders/` | bgfx shader build configuration and varying definition. This is not currently added by the root CMake file. |
+| `shaders/` | bgfx shader source, varying definition, and build configuration. |
 | `third_party/SDL/` | SDL3 dependency. |
 | `third_party/bgfx.cmake/` | bgfx, bx, bimg, and CMake integration. |
 | `third_party/imgui/` | Vendored Dear ImGui sources; currently not linked into the engine target. |
@@ -74,7 +74,7 @@ The root project is named `MyEngine` and requires CMake 3.25 or newer. It uses C
 - **`engine`**: A static library containing the core, platform, graphics, and lifecycle code.
 - **`sandbox`**: An executable linked privately to `engine`. It is the current runnable application.
 - **Third-party targets**: bgfx/bx and SDL3 targets supplied by their respective CMake projects.
-- **`engine_shaders`**: Defined by `shaders/CMakeLists.txt`, but currently not reachable because the root `CMakeLists.txt` does not call `add_subdirectory(shaders)`.
+- **`engine_shaders`**: Compiles the mesh shaders for the profiles supported by the host platform. `sandbox` depends on it, so a sandbox build produces the runtime shader binaries.
 
 Runtime binaries are configured under `${CMAKE_BINARY_DIR}/bin` for all configurations. With the checked-in presets, the expected executable is:
 
@@ -127,9 +127,11 @@ SDL video -> SDL window -> native handles -> bgfx -> Engine ready
 3. Computes delta time using SDL's high-resolution performance counter.
 4. Applies a pending pixel-size change to bgfx through `GfxSystem::Resize`.
 5. Calls `Frame(deltaSeconds)`.
-6. `Frame` begins the graphics frame, writes bgfx debug text, and ends the frame with `bgfx::frame()`.
+6. `Frame` begins the graphics frame, writes bgfx debug text, submits the cube, and ends the frame with `bgfx::frame()`.
 
-The current frame only renders diagnostic text:
+The current frame renders both diagnostic text and a rotating, vertex-coloured cube. The cube renderer owns its vertex buffer, index buffer, and shader program; its projection is recalculated from the drawable size every frame.
+
+Diagnostic text reports:
 
 - Engine label.
 - Selected bgfx renderer name.
@@ -200,7 +202,7 @@ A missing window handle is treated as a fatal initialization error for the curre
 
 `BeginFrame` sets the opaque view rectangle to the current drawable dimensions and calls `bgfx::touch` so the view is cleared even when no draw calls are submitted. Application rendering can be added between `BeginFrame` and `EndFrame` as the engine grows.
 
-`EndFrame` submits queued work and advances bgfx with `bgfx::frame()`.
+`CubeRenderer` submits an indexed cube to the opaque view between `BeginFrame` and `EndFrame`. `EndFrame` advances bgfx with `bgfx::frame()`.
 
 ### View IDs
 
@@ -230,13 +232,7 @@ These utilities have no dependency on the application layer and are available to
 
 The shader CMake module describes a bgfx shader pipeline for `vs_mesh.sc` and `fs_mesh.sc`, using `varying.def.sc` and bgfx include directories. It writes generated shader binaries below `${CMAKE_BINARY_DIR}/shaders` and owns them through an `engine_shaders` custom target.
 
-Current repository state:
-
-- `shaders/varying.def.sc` exists.
-- `shaders/vs_mesh.sc` and `shaders/fs_mesh.sc` are not currently present.
-- `shaders/CMakeLists.txt` is not included from the root build.
-
-Before relying on shader compilation, add the mesh shader sources and wire `add_subdirectory(shaders)` into the root CMake configuration. The generated shader output should then be treated as build output, not committed source.
+`vs_mesh.sc` and `fs_mesh.sc` are compiled by `engine_shaders`. Generated binaries are written below `${CMAKE_BINARY_DIR}/shaders` under renderer-profile directories such as `metal`, `spirv`, and `dxbc`. `CubeRenderer` selects the matching binary for bgfx's active renderer at runtime. These binaries are build output and are not committed source.
 
 ## 10. Third-Party Boundaries
 
@@ -264,10 +260,9 @@ The current loop is intentionally synchronous and has no task system, exception-
 
 The natural next layers are:
 
-1. Add a renderer/resource abstraction above raw bgfx handles.
-2. Add shader source files and connect the shader target to the main build.
-3. Add vertex/index buffers, uniforms, textures, and a first mesh pass using the reserved opaque view.
-4. Introduce an asset or resource manager for generated shader binaries and image data.
+1. Generalize `CubeRenderer` into a renderer/resource abstraction above raw bgfx handles.
+2. Introduce an asset or resource manager for generated shader binaries and image data.
+3. Add textures, material uniforms, and reusable mesh instances to the opaque pass.
 5. Add an input abstraction so gameplay code does not consume SDL events directly.
 6. Add an application interface or scene layer above `Engine` while keeping `sandbox` as a thin host.
 7. Integrate Dear ImGui through a deliberate CMake target and a renderer/platform backend.

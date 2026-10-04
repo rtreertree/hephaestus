@@ -39,5 +39,6 @@ set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(third_party/SDL)
 
 # ---------------------------------------------------------------------- engine
+add_subdirectory(shaders)
 add_subdirectory(engine)
 add_subdirectory(sandbox)

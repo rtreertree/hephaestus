@@ -2,6 +2,7 @@
 #include "core/types.h"
 #include "platform/window.h"
 #include "gfx/gfx_system.h"
+#include "gfx/cube_renderer.h"
 
 namespace eng {
 
@@ -9,7 +10,6 @@ struct EngineDesc {
     const char* title  = "MyEngine";
     u32         width  = 1280;
     u32         height = 720;
-    u32         maxFps = 100;
     bool        vsync  = true;
 };
 
@@ -24,6 +24,7 @@ private:
 
     platform::Window m_window;
     gfx::GfxSystem   m_gfx;
+    gfx::CubeRenderer m_cube;
     bool m_initialized = false;
 };
 

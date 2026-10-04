@@ -26,6 +26,12 @@ bool Engine::Init(const EngineDesc& desc) {
         return false;
     }
 
+    if (!m_cube.Init()) {
+        m_gfx.Shutdown();
+        m_window.Shutdown();
+        return false;
+    }
+
     m_initialized = true;
     ENGINE_LOG_INFO("Engine initialized.");
     return true;
@@ -56,15 +62,18 @@ void Engine::Frame(f32 deltaSeconds) {
     bgfx::dbgTextPrintf(1, 1, 0x0f, "MyEngine foundation");
     bgfx::dbgTextPrintf(1, 2, 0x0f, "renderer: %s", bgfx::getRendererName(bgfx::getRendererType()));
     bgfx::dbgTextPrintf(1, 3, 0x0f, "%ux%u  dt: %.2f ms", m_gfx.Width(), m_gfx.Height(), deltaSeconds * 1000.0f);
-    bgfx::dbgTextPrintf(1, 4, (1 / deltaSeconds > 60) ? 0x0f : 0x0e, "FPS: %.2f", 1 / deltaSeconds);
+    const f32 fps = deltaSeconds > 0.0f ? 1.0f / deltaSeconds : 0.0f;
+    bgfx::dbgTextPrintf(1, 4, fps > 60.0f ? 0x0f : 0x0e, "FPS: %.2f", fps);
     bgfx::dbgTextPrintf(1, 5, 0x0a, "ESC to quit");
 
+    m_cube.Render(deltaSeconds, m_gfx.Width(), m_gfx.Height());
     m_gfx.EndFrame();
 }
 
 void Engine::Shutdown() {
     if (!m_initialized) return;
     // Reverse init order.
+    m_cube.Shutdown();
     m_gfx.Shutdown();
     m_window.Shutdown();
     m_initialized = false;

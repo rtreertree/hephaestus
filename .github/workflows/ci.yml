@@ -44,5 +44,5 @@ jobs:
       - name: Configure
         run: cmake --preset debug
 
-      - name: Type check engine
-        run: cmake --build --preset debug --target engine
+      - name: Build sandbox integration target
+        run: cmake --build --preset debug --target sandbox

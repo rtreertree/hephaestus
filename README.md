@@ -1,7 +1,8 @@
 # hephaestus
 [![ci](https://github.com/rtreertree/hephaestus/actions/workflows/ci.yml/badge.svg)](https://github.com/rtreertree/hephaestus/actions/workflows/ci.yml)
 
-Cross-platform (Windows / Linux / macOS) engine foundation on bgfx + SDL3.
+Cross-platform (Windows / Linux / macOS) C++20 engine foundation on bgfx + SDL3.
+The sandbox opens a window and renders a rotating, vertex-coloured cube.
 
 ## Clone
 
@@ -28,7 +29,7 @@ cmake --build --preset debug
 ```
 
 
-Binary: `build/debug/sandbox/sandbox[.exe]`
+Binary: `build/debug/bin/sandbox`
 
 ## Git hooks
 

@@ -3,6 +3,7 @@ add_library(engine STATIC
   platform/window.cpp
   platform/native_handle.cpp
   gfx/gfx_system.cpp
+  gfx/cube_renderer.cpp
   engine.cpp
 
   core/types.h
@@ -12,11 +13,17 @@ add_library(engine STATIC
   platform/native_handle.h
   gfx/views.h
   gfx/gfx_system.h
+  gfx/cube_renderer.h
   gfx/quitecallback.h
   engine.h
 )
 
 target_include_directories(engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Kept as an absolute build path so the sandbox can be launched from an IDE,
+# its output directory, or the repository root without special working-dir setup.
+target_compile_definitions(engine PRIVATE
+  ENGINE_SHADER_DIR="${CMAKE_BINARY_DIR}/shaders")
 
 target_link_libraries(engine
   PUBLIC

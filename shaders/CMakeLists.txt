@@ -5,8 +5,8 @@ bgfx_compile_shaders(
   SHADERS ${CMAKE_CURRENT_SOURCE_DIR}/vs_mesh.sc
   VARYING_DEF ${CMAKE_CURRENT_SOURCE_DIR}/varying.def.sc
   OUTPUT_DIR ${SHADER_OUT}
-  INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/third_party/bgfx/src
-               ${CMAKE_SOURCE_DIR}/third_party/bgfx/examples/common
+  INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/third_party/bgfx.cmake/bgfx/src
+               ${CMAKE_SOURCE_DIR}/third_party/bgfx.cmake/bgfx/examples/common
   OUT_FILES_VAR VS_OUT
 )
 
@@ -15,8 +15,8 @@ bgfx_compile_shaders(
   SHADERS ${CMAKE_CURRENT_SOURCE_DIR}/fs_mesh.sc
   VARYING_DEF ${CMAKE_CURRENT_SOURCE_DIR}/varying.def.sc
   OUTPUT_DIR ${SHADER_OUT}
-  INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/third_party/bgfx/src
-               ${CMAKE_SOURCE_DIR}/third_party/bgfx/examples/common
+  INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/third_party/bgfx.cmake/bgfx/src
+               ${CMAKE_SOURCE_DIR}/third_party/bgfx.cmake/bgfx/examples/common
   OUT_FILES_VAR FS_OUT
 )
 
